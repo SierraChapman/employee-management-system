@@ -26,7 +26,10 @@ const database = require("./database.js");
 
 database.connect()
 .then(() => {
-  database.close()
+  database.create("department", {name: "Administration"});
+})
+.then(() => {
+  database.close();
 })
 .catch(err => {
   console.log(err);
