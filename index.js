@@ -5,6 +5,9 @@
 // prompt.js -- promise-based functions to prompt the user for input
 // data.js -- promise-based functions to connect to and interact with database
 
+// imports
+const data = require("./data.js");
+
 // FUNCTIONS
 
 // start()
@@ -20,5 +23,13 @@
 // RUN PROGRAM
 
 // Establish connection
+
+data.connect()
+.then(() => {
+  data.connection.end()
+})
+.catch(err => {
+  console.log(err);
+});
 
 // Execute start()
