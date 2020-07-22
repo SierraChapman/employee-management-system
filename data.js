@@ -36,9 +36,12 @@ module.exports = {
         }
       });
     });
-  }
+  },
 
   // close -- close the connection
+  close: function() {
+    this.connection.end();
+  },
 
   // insert(table, info) -- inserts a new item described by info object into the specified table
 

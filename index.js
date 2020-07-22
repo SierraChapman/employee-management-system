@@ -26,7 +26,7 @@ const data = require("./data.js");
 
 data.connect()
 .then(() => {
-  data.connection.end()
+  data.close()
 })
 .catch(err => {
   console.log(err);
