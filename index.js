@@ -3,10 +3,10 @@
 // schema.sql -- contains SQL commands to create the database
 // index.js -- starts the program, controls the logic
 // prompt.js -- promise-based functions to prompt the user for input
-// data.js -- promise-based functions to connect to and interact with database
+// database.js -- promise-based functions to connect to and interact with database
 
 // imports
-const data = require("./data.js");
+const database = require("./database.js");
 
 // FUNCTIONS
 
@@ -24,9 +24,9 @@ const data = require("./data.js");
 
 // Establish connection
 
-data.connect()
+database.connect()
 .then(() => {
-  data.close()
+  database.close()
 })
 .catch(err => {
   console.log(err);
