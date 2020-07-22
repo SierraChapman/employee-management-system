@@ -1,4 +1,4 @@
-// This file contains functions access and update the database
+// This file contains functions access and modify the database
 
 // Import required modules: mysql
 const mysql = require("mysql");
@@ -24,7 +24,7 @@ module.exports = {
   
   // FUNCTIONS
 
-  // connect -- establishes connection with MySQL database
+  // connect() -- establish connection with MySQL database
   connect: function() {
     return new Promise((resolve, reject) => {
       this.connection.connect(err => {
@@ -38,19 +38,14 @@ module.exports = {
     });
   },
 
-  // close -- close the connection
+  // create(table, data) -- insert a new row described by data (object) into the specified table (string)
+
+  // read(table, columns) -- get data in specified columns (array of strings) from table (string)
+
+  // update(table, item, newInfo) -- update item (object) in table (string) with newInfo (object)
+
+  // close() -- close the connection
   close: function() {
     this.connection.end();
   },
-
-  // insert(table, info) -- inserts a new item described by info object into the specified table
-
-  // getChoices(table) -- returns array of objects extracted from the specified table to use as choices in prompt
-
-  // getDepartments() -- gets table of departments
-
-  // getRoles() -- gets table of roles, including each role's department
-
-  // getEmployees() -- gets table of employees, including each employee's role, department, and manager
-
 };
