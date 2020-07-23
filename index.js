@@ -36,7 +36,10 @@ database.connect()
 })
 .then(data => {
   console.table(data);
-  return prompt.viewDepartments();
+  return prompt();
+})
+.then(answers => {
+  return answers.action();
 })
 .then(() => {
   // console.table(data);
