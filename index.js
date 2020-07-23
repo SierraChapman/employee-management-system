@@ -6,6 +6,7 @@
 // database.js -- promise-based functions to connect to and interact with database
 
 // imports
+const prompt = require("./prompt.js");
 const database = require("./database.js");
 
 // FUNCTIONS
@@ -35,10 +36,10 @@ database.connect()
 })
 .then(data => {
   console.table(data);
-  return database.read("department", ["name"]);
+  return prompt.viewDepartments();
 })
-.then(data => {
-  console.table(data);
+.then(() => {
+  // console.table(data);
   database.close();
 })
 .catch(err => {
