@@ -21,13 +21,28 @@ const mainMenu = [
     name: "View Departments",
     value: viewDepartments
   },
+  {
+    name: "Add Department",
+    value: addDepartment
+  },
 ];
 
 // FUNCTIONS
 
 // addDepartment
+function addDepartment() {
   // Prompt user for department info
-  // Add department to database
+  return inquirer.prompt({
+    type: "input",
+    name: "name",
+    message: "What is the department's name?"
+  }).then(answers => {
+    // Add department to database
+    return database.create("department", {
+      name: answers.name
+    });
+  });
+}
 
 // addRole
   // Get list of departments for use in prompt
