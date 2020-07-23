@@ -224,6 +224,7 @@ const mainMenu = [
   {name: "Add Role", value: addRole},
   {name: "Add Department", value: addDepartment},
   {name: "Update Employee Role", value: updateEmployeeRole},
+  {name: "Exit", value: "exit"}
 ];
 
 // EXPORTS

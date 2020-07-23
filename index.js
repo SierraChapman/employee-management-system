@@ -11,34 +11,26 @@ const database = require("./database.js");
 
 // FUNCTIONS
 
-// start()
-
-  // Prompt user to select action
-
-  // If the action is "exit", close the connection and return
-
-  // Otherwise, execute the action
-
-  // When finished, start() again
+// start() -- prompts for one action and implements it, then calls start again
+function start(promise) {
+  return promise.then(() => {
+      // Prompt user to select action
+    return prompt();
+  }).then(answers => {
+    if (answers.action === "exit") {
+      // If the action is "exit", close the connection and return
+      database.close();
+      return;
+    } else {
+      // Otherwise, execute the action
+      const newPromise = answers.action();
+      // When finished, start() again
+      return start(newPromise);
+    }
+  });
+}
 
 // RUN PROGRAM
 
-// Establish connection
-
-// For testing purposes:
-database.connect()
-.then(() => {
-  return prompt();
-})
-.then(answers => {
-  return answers.action();
-})
-.then(() => {
-  database.close();
-})
-.catch(err => {
-  console.log(err);
-  database.close();
-});
-
-// Execute start()
+// Establish connection and execute start()
+start(database.connect());
