@@ -5,31 +5,8 @@ const inquirer = require("inquirer");
 const database = require("./database.js");
 const cTable = require("console.table");
 
-// VARIABLES AND CONSTANTS
-
-// mainMenu -- array of choices for the main menu prompt (values are functions to execute)
-const mainMenu = [
-  {
-    name: "View Employees",
-    value: viewEmployees
-  },
-  {
-    name: "View Roles",
-    value: viewRoles
-  },
-  {
-    name: "View Departments",
-    value: viewDepartments
-  },
-  {
-    name: "Add Department",
-    value: addDepartment
-  },
-];
-
 // FUNCTIONS
 
-// addDepartment
 function addDepartment() {
   // Prompt user for department info
   return inquirer.prompt({
@@ -44,10 +21,39 @@ function addDepartment() {
   });
 }
 
-// addRole
+function addRole() {
   // Get list of departments for use in prompt
-  // Prompt user for role info
-  // Add role to database
+  return database.read("department", ["id", "name"]).then(data => {
+    // Prompt user for role info
+    return inquirer.prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "What is the role title?"
+      },
+      {
+        type: "number",
+        name: "salary",
+        message: "What is the role's salary?"
+      },
+      {
+        type: "list",
+        name: "department",
+        message: "Which department does the role belong to?",
+        choices: data.map(row => {
+          return {name: row.name, value: row.id}
+        })
+      }
+    ]);
+  }).then(answers => {
+    // Add role to database
+    return database.create("role", {
+      title: answers.title,
+      salary: answers.salary,
+      department_id: answers.department
+    });
+  });
+}
 
 // addEmployee
   // Get list of roles for use in prompt
@@ -114,6 +120,32 @@ function viewEmployees() {
   // Get list of roles
   // Have user choose one employee and role
   // Set chosen employee's role to chosen role
+
+// VARIABLES AND CONSTANTS
+
+// mainMenu -- array of choices for the main menu prompt (values are functions to execute)
+const mainMenu = [
+  {
+    name: "View Employees",
+    value: viewEmployees
+  },
+  {
+    name: "View Roles",
+    value: viewRoles
+  },
+  {
+    name: "View Departments",
+    value: viewDepartments
+  },
+  {
+    name: "Add Role",
+    value: addRole
+  },
+  {
+    name: "Add Department",
+    value: addDepartment
+  },
+];
 
 // EXPORTS
 
