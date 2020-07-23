@@ -41,7 +41,7 @@ module.exports = {
   // create(table, data) -- insert a new row described by data (object) into the specified table (string)
   create: function(table, data) {
     return new Promise((resolve, reject) => {
-      this.connection.query("INSERT INTO ?? SET ?;", [table, data], (err, res) => {
+      this.connection.query("INSERT INTO ?? SET ?", [table, data], (err, res) => {
         if (err) {
           reject(err);
         } else {
@@ -53,11 +53,23 @@ module.exports = {
   },
 
   // read(table, columns) -- get data in specified columns (array of strings) from table (string)
+  read: function(table, columns) {
+    return new Promise((resolve, reject) => {
+      this.connection.query("SELECT ?? FROM ??", [columns, table], (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  },
 
   // update(table, item, newInfo) -- update item (object) in table (string) with newInfo (object)
 
   // close() -- close the connection
   close: function() {
     this.connection.end();
+    console.log("Connection to database closed.")
   },
 };

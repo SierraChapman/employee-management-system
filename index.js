@@ -24,11 +24,16 @@ const database = require("./database.js");
 
 // Establish connection
 
+// For testing purposes:
 database.connect()
 .then(() => {
-  database.create("department", {name: "Administration"});
+  return database.create("role", {title: "associate software enginner", salary: 110000, department_id: 4});
 })
 .then(() => {
+  return database.read("department", ["id", "name"]);
+})
+.then(data => {
+  console.table(data);
   database.close();
 })
 .catch(err => {
