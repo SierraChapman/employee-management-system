@@ -52,10 +52,27 @@ module.exports = {
     });
   },
 
-  // read(table, columns) -- get data in specified columns (array of strings) from table (string)
-  read: function(table, columns) {
+  // read(table, columns, leftJoins) -- get data in specified columns (array of strings) from table (string)
+  //
+  // optionally perform leftJoins on other tables by setting leftJoins as an array of objects with keys:
+  // * table: name of table to join to (as string)
+  // * on: array of two strings specifying columns to match on
+  //
+  read: function(table, columns, leftJoins=[]) {
+    // construct queryString and queryArray
+    let queryString = "SELECT ?? FROM ??";
+    let queryVals = [columns, table]; // values to insert into placeholders ("?" and "??")
+
+    for (let i = 0; i < leftJoins.length; i++) {
+      queryString += " LEFT JOIN ?? ON ?? = ??";
+      queryVals.push(leftJoins[i].table, ...leftJoins[i].on);
+    }
+
+    console.log(queryVals);
+
+    // submit query, then execute resolve function on the response
     return new Promise((resolve, reject) => {
-      this.connection.query("SELECT ?? FROM ??", [columns, table], (err, res) => {
+      this.connection.query(queryString, queryVals, (err, res) => {
         if (err) {
           reject(err);
         } else {
