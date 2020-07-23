@@ -10,6 +10,10 @@ const cTable = require("console.table");
 // mainMenu -- array of choices for the main menu prompt (values are functions to execute)
 const mainMenu = [
   {
+    name: "View Employees",
+    value: viewEmployees
+  },
+  {
     name: "View Roles",
     value: viewRoles
   },
@@ -66,9 +70,29 @@ function viewRoles() {
   });
 }
 
-// viewEmployees
-  // Get employee list
+function viewEmployees() {
+  // Get Employee list
+  const promise = database.read("employee", ["employee.first_name", "employee.last_name", "role.title", "department.name", "manager.first_name", "manager.last_name"], [
+    {table: "role", on: ["employee.role_id", "role.id"]}, 
+    {table: "department", on: ["role.department_id", "department.id"]},
+    {table: "employee", alias: "manager", on: ["employee.manager_id", "manager.id"]},
+  ]);
   // Display to user
+  return promise.then(data => {
+    const table = data.map(row => {
+      return {
+        "First Name": row.employee_first_name,
+        "Last Name": row.employee_last_name,
+        Role: row.role_title, 
+        Department: row.department_name,
+        Manager: row.manager_first_name ? row.manager_first_name + " " + row.manager_last_name : "None"
+      };
+    });
+    console.log("");
+    console.table(table);
+    return;
+  });
+}
 
 // updateEmployeeRole
   // Get list of employees

@@ -28,21 +28,12 @@ const database = require("./database.js");
 // For testing purposes:
 database.connect()
 .then(() => {
-  return database.read("employee", ["employee.first_name", "employee.last_name", "role.title", "department.name", "manager.first_name", "manager.last_name"], [
-    {table: "role", on: ["employee.role_id", "role.id"]}, 
-    {table: "department", on: ["role.department_id", "department.id"]},
-    {table: "employee", alias: "manager", on: ["employee.manager_id", "manager.id"]},
-  ]);
-})
-.then(data => {
-  console.table(data);
   return prompt();
 })
 .then(answers => {
   return answers.action();
 })
 .then(() => {
-  // console.table(data);
   database.close();
 })
 .catch(err => {
