@@ -175,39 +175,57 @@ function viewEmployees() {
 }
 
 // updateEmployeeRole
+function updateEmployeeRole() {
   // Get list of employees
+  const employeePromise = database.read("employee", ["id", "first_name", "last_name"]);
   // Get list of roles
-  // Have user choose one employee and role
+  const rolePromise = database.read("role", ["id", "title"]);
+
+  // Once both these are done, continue
+  return Promise.all([rolePromise, employeePromise]).then(([roleData, employeeData]) => {
+    const employees = employeeData.map(row => {
+      return {
+        name: row.first_name + " " + row.last_name, 
+        value: row.id
+      }
+    });
+    const roles = roleData.map(row => {
+      return {name: row.title, value: row.id}
+    });
+    // Have user choose one employee and role
+    return inquirer.prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Which employee do you want to update?",
+        choices: employees
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "What is the employee's new role?",
+        choices: roles
+      },
+    ]);
+  }).then(answers => {
+    // Add employee to database
+    return database.update("employee", answers.employee, {role_id: answers.newRole});
+  });
+
   // Set chosen employee's role to chosen role
+}
 
 // VARIABLES AND CONSTANTS
 
 // mainMenu -- array of choices for the main menu prompt (values are functions to execute)
 const mainMenu = [
-  {
-    name: "View Employees",
-    value: viewEmployees
-  },
-  {
-    name: "View Roles",
-    value: viewRoles
-  },
-  {
-    name: "View Departments",
-    value: viewDepartments
-  },
-  {
-    name: "Add Employee",
-    value: addEmployee
-  },
-  {
-    name: "Add Role",
-    value: addRole
-  },
-  {
-    name: "Add Department",
-    value: addDepartment
-  },
+  {name: "View Employees", value: viewEmployees},
+  {name: "View Roles", value: viewRoles},
+  {name: "View Departments", value: viewDepartments},
+  {name: "Add Employee", value: addEmployee},
+  {name: "Add Role", value: addRole},
+  {name: "Add Department", value: addDepartment},
+  {name: "Update Employee Role", value: updateEmployeeRole},
 ];
 
 // EXPORTS

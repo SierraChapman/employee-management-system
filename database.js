@@ -98,6 +98,7 @@ module.exports = {
         if (err) {
           reject(err);
         } else {
+          console.log(table[0].toUpperCase() + table.slice(1) + " updated.")
           resolve(res);
         }
       });
