@@ -10,9 +10,13 @@ const cTable = require("console.table");
 // mainMenu -- array of choices for the main menu prompt (values are functions to execute)
 const mainMenu = [
   {
+    name: "View Roles",
+    value: viewRoles
+  },
+  {
     name: "View Departments",
     value: viewDepartments
-  }
+  },
 ];
 
 // FUNCTIONS
@@ -46,9 +50,21 @@ function viewDepartments() {
   });
 }
 
-// viewRoles
+function viewRoles() {
   // Get role list
+  const promise = database.read("role", ["role.title", "department.name"], [
+    {table: "department", on: ["role.department_id", "department.id"]}
+  ]);
   // Display to user
+  return promise.then(data => {
+    const table = data.map(row => {
+      return {Role: row.role_title, Department: row.department_name};
+    });
+    console.log("");
+    console.table(table);
+    return;
+  });
+}
 
 // viewEmployees
   // Get employee list
