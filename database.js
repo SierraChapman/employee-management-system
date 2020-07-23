@@ -65,7 +65,18 @@ module.exports = {
     });
   },
 
-  // update(table, item, newInfo) -- update item (object) in table (string) with newInfo (object)
+  // update(table, id, newData) -- update item with specified id (int) in table (string) with newData (newData)
+  update: function(table, id, newData) {
+    return new Promise((resolve, reject) => {
+      this.connection.query("UPDATE ?? SET ? WHERE id = ?", [table, newData, id], (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  },
 
   // close() -- close the connection
   close: function() {

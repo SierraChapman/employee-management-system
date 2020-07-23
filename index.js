@@ -27,10 +27,10 @@ const database = require("./database.js");
 // For testing purposes:
 database.connect()
 .then(() => {
-  return database.create("role", {title: "associate software enginner", salary: 110000, department_id: 4});
+  return database.update("role", 5, {title: "software enginner"});
 })
 .then(() => {
-  return database.read("department", ["id", "name"]);
+  return database.read("role", ["title", "salary"]);
 })
 .then(data => {
   console.table(data);
