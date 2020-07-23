@@ -77,13 +77,17 @@ function viewDepartments() {
 
 function viewRoles() {
   // Get role list
-  const promise = database.read("role", ["role.title", "department.name"], [
+  const promise = database.read("role", ["role.title", "role.salary", "department.name"], [
     {table: "department", on: ["role.department_id", "department.id"]}
   ]);
   // Display to user
   return promise.then(data => {
     const table = data.map(row => {
-      return {Role: row.role_title, Department: row.department_name};
+      return {
+        Role: row.role_title, 
+        Salary: row.role_salary,
+        Department: row.department_name
+      };
     });
     console.log("");
     console.table(table);
@@ -93,7 +97,7 @@ function viewRoles() {
 
 function viewEmployees() {
   // Get Employee list
-  const promise = database.read("employee", ["employee.first_name", "employee.last_name", "role.title", "department.name", "manager.first_name", "manager.last_name"], [
+  const promise = database.read("employee", ["employee.first_name", "employee.last_name", "role.title", "role.salary", "department.name", "manager.first_name", "manager.last_name"], [
     {table: "role", on: ["employee.role_id", "role.id"]}, 
     {table: "department", on: ["role.department_id", "department.id"]},
     {table: "employee", alias: "manager", on: ["employee.manager_id", "manager.id"]},
@@ -105,6 +109,7 @@ function viewEmployees() {
         "First Name": row.employee_first_name,
         "Last Name": row.employee_last_name,
         Role: row.role_title, 
+        Salary: row.role_salary,
         Department: row.department_name,
         Manager: row.manager_first_name ? row.manager_first_name + " " + row.manager_last_name : "None"
       };
