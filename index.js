@@ -5,7 +5,7 @@
 // prompt.js -- promise-based functions to prompt the user for input
 // database.js -- promise-based functions to connect to and interact with database
 
-// imports
+// IMPORTS
 const prompt = require("./prompt.js");
 const database = require("./database.js");
 

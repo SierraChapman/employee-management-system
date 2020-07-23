@@ -1,6 +1,6 @@
 // This file contains functions to get and make use of user input.
 
-// Import required modules: inquirer and data.js
+// Import required modules: inquirer, data.js, and console.table
 const inquirer = require("inquirer");
 const database = require("./database.js");
 const cTable = require("console.table");
@@ -208,11 +208,9 @@ function updateEmployeeRole() {
       },
     ]);
   }).then(answers => {
-    // Add employee to database
+    // Set chosen employee's role to chosen role
     return database.update("employee", answers.employee, {role_id: answers.newRole});
   });
-
-  // Set chosen employee's role to chosen role
 }
 
 // VARIABLES AND CONSTANTS
