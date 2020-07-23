@@ -56,23 +56,32 @@ module.exports = {
   //
   // optionally perform leftJoins on other tables by setting leftJoins as an array of objects with keys:
   // * table: name of table to join to (as string)
+  // * alias: optional alias for table (to allow self-joining)
   // * on: array of two strings specifying columns to match on
   //
   read: function(table, columns, leftJoins=[]) {
-    // construct queryString and queryArray
-    let queryString = "SELECT ?? FROM ??";
-    let queryVals = [columns, table]; // values to insert into placeholders ("?" and "??")
-
-    for (let i = 0; i < leftJoins.length; i++) {
-      queryString += " LEFT JOIN ?? ON ?? = ??";
-      queryVals.push(leftJoins[i].table, ...leftJoins[i].on);
+    // construct query string and values
+    const options = {};
+    options.sql = "SELECT ?? FROM ??";
+    options.values = [columns, table];
+    // if performing joins, use format tableName_columnName for keys in result
+    if (leftJoins.length > 0) {
+      options.nestTables = "_";
     }
-
-    console.log(queryVals);
+    // add in any left joins
+    for (let i = 0; i < leftJoins.length; i++) {
+      if (leftJoins[i].alias) {
+        options.sql += " LEFT JOIN ?? AS ?? ON ?? = ??";
+        options.values.push(leftJoins[i].table, leftJoins[i].alias, ...leftJoins[i].on);
+      } else {
+        options.sql += " LEFT JOIN ?? ON ?? = ??";
+        options.values.push(leftJoins[i].table, ...leftJoins[i].on);
+      }
+    }
 
     // submit query, then execute resolve function on the response
     return new Promise((resolve, reject) => {
-      this.connection.query(queryString, queryVals, (err, res) => {
+      this.connection.query(options, (err, res) => {
         if (err) {
           reject(err);
         } else {

@@ -27,10 +27,15 @@ const database = require("./database.js");
 // For testing purposes:
 database.connect()
 .then(() => {
-  return database.update("role", 5, {title: "software enginner"});
+  return database.read("employee", ["employee.first_name", "employee.last_name", "role.title", "department.name", "manager.first_name", "manager.last_name"], [
+    {table: "role", on: ["employee.role_id", "role.id"]}, 
+    {table: "department", on: ["role.department_id", "department.id"]},
+    {table: "employee", alias: "manager", on: ["employee.manager_id", "manager.id"]},
+  ]);
 })
-.then(() => {
-  return database.read("role", ["title", "salary"]);
+.then(data => {
+  console.table(data);
+  return database.read("department", ["name"]);
 })
 .then(data => {
   console.table(data);
@@ -38,6 +43,7 @@ database.connect()
 })
 .catch(err => {
   console.log(err);
+  database.close();
 });
 
 // Execute start()
