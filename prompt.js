@@ -55,11 +55,65 @@ function addRole() {
   });
 }
 
-// addEmployee
+function addEmployee() {
   // Get list of roles for use in prompt
+  const rolePromise = database.read("role", ["id", "title"]);
   // Get list of employees for use in prompt
-  // Prompt user for employee info
-  // Add employee to database
+  const employeePromise = database.read("employee", ["id", "first_name", "last_name"]);
+
+  // Once both these are done, continue
+  return Promise.all([rolePromise, employeePromise]).then(([roleData, employeeData]) => {
+    const roles = roleData.map(row => {
+      return {name: row.title, value: row.id}
+    });
+
+    const managers = employeeData.map(row => {
+      return {
+        name: row.first_name + " " + row.last_name, 
+        value: row.id
+      }
+    });
+
+    // Allow for no manager
+    managers.push({
+      name: "None",
+      value: null
+    });
+
+    return inquirer.prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employee's first name?"
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employee's last name?"
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "Which is the employee's role?",
+        choices: roles
+      },
+      {
+        type: "list",
+        name: "manager",
+        message: "Who is the employee's manager?",
+        choices: managers
+      },
+    ]);
+  }).then(answers => {
+    // Add employee to database
+    return database.create("employee", {
+      first_name: answers.firstName,
+      last_name: answers.lastName,
+      role_id: answers.role,
+      manager_id: answers.manager
+    });
+  });
+}
 
 function viewDepartments() {
   // Get department list
@@ -141,6 +195,10 @@ const mainMenu = [
   {
     name: "View Departments",
     value: viewDepartments
+  },
+  {
+    name: "Add Employee",
+    value: addEmployee
   },
   {
     name: "Add Role",
